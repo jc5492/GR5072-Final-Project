@@ -1,0 +1,23 @@
+:py:mod:`final_project_jc5492`
+==============================
+
+.. py:module:: final_project_jc5492
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   final_project_jc5492/index.rst
+
+
+Package Contents
+----------------
+
+.. py:data:: __version__
+   
+
+   
+

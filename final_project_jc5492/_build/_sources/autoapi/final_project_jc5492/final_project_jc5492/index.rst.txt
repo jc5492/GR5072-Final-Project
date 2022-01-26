@@ -1,0 +1,77 @@
+:py:mod:`final_project_jc5492.final_project_jc5492`
+===================================================
+
+.. py:module:: final_project_jc5492.final_project_jc5492
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   final_project_jc5492.final_project_jc5492.get_crash_data
+   final_project_jc5492.final_project_jc5492.geocode_missing_row
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   final_project_jc5492.final_project_jc5492.default_params
+
+
+.. py:data:: default_params
+   
+
+   
+
+.. py:function:: get_crash_data(params=default_params)
+
+   Gets vehicle collision data from NYC open data API based on provided dictionary of parameters.
+
+   :param date: Either a single date in "YYYY-MM-DD" format, or a list of [min date, max date]
+   :type date: String
+   :param time: Either a single time in "HH:MM" format, or a list of [min time, max time]
+   :type time: String
+   :param zip_code: Either a single 5 digit zip code, or a list of [min zip code, max zip code]
+   :type zip_code: Integer
+   :param borough: List of boroughs to be included i.e. ["MANHATTAN","QUEENS","BRONX"]
+   :type borough: String
+   :param injury: Either a single integer or a list of [min injuries, max injuries]
+   :type injury: Integer
+   :param death: Either a single integer or a list of [min deaths, max deaths]
+   :type death: Integer
+   :param limit: Maximum number of rows to return from API
+   :type limit: Integer
+
+   :returns: DataFrame of vehicle collisions returned from API
+   :rtype: Pandas DataFrame
+
+   .. rubric:: Examples
+
+   >>> default_params = {"date":['2021-01-01','2021-01-15'],
+           "time":["09:00","17:00" ],
+           "borough":["MANHATTAN"],
+           "injury":[0,10],
+           "death":[0,0],
+           "limit":10000}
+   >>> df = get_crash_data(default_params)
+
+
+.. py:function:: geocode_missing_row(row)
+
+   Geocodes on/off/cross street names  and zip codes to return latitude and longitude
+
+   :param row: Contains columns for "on_street_name", "off_street_name", "cross_street_name" and "zip_code"
+   :type row: Row of a Dataframe
+
+   :returns: List of geocoded coordinates [lat,long]
+   :rtype: List
+
+

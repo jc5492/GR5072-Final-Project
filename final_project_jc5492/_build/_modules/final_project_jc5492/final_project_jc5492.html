@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>final_project_jc5492.final_project_jc5492 &mdash; final_project_jc5492  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/togglebutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/mystnb.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/togglebutton.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> final_project_jc5492
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../example.html">Example usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">final_project_jc5492</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>final_project_jc5492.final_project_jc5492</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for final_project_jc5492.final_project_jc5492</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">geocoder</span>
+
+<span class="n">default_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;limit&quot;</span><span class="p">:</span><span class="mi">10000</span><span class="p">}</span>
+		  
+<div class="viewcode-block" id="get_crash_data"><a class="viewcode-back" href="../../autoapi/final_project_jc5492/final_project_jc5492/index.html#final_project_jc5492.final_project_jc5492.get_crash_data">[docs]</a><span class="k">def</span> <span class="nf">get_crash_data</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">default_params</span><span class="p">):</span>
+  <span class="sd">&#39;&#39;&#39;Gets vehicle collision data from NYC open data API based on provided dictionary of parameters.</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  date : String</span>
+<span class="sd">    Either a single date in &quot;YYYY-MM-DD&quot; format, or a list of [min date, max date]</span>
+<span class="sd">  time : String</span>
+<span class="sd">    Either a single time in &quot;HH:MM&quot; format, or a list of [min time, max time]</span>
+<span class="sd">  zip_code : Integer</span>
+<span class="sd">    Either a single 5 digit zip code, or a list of [min zip code, max zip code]</span>
+<span class="sd">  borough : String</span>
+<span class="sd">    List of boroughs to be included i.e. [&quot;MANHATTAN&quot;,&quot;QUEENS&quot;,&quot;BRONX&quot;]</span>
+<span class="sd">  injury : Integer</span>
+<span class="sd">    Either a single integer or a list of [min injuries, max injuries]</span>
+<span class="sd">  death : Integer</span>
+<span class="sd">    Either a single integer or a list of [min deaths, max deaths]</span>
+<span class="sd">  limit : Integer </span>
+<span class="sd">    Maximum number of rows to return from API</span>
+<span class="sd">  </span>
+<span class="sd">  Returns</span>
+<span class="sd">  --------</span>
+<span class="sd">  Pandas DataFrame</span>
+<span class="sd">    DataFrame of vehicle collisions returned from API</span>
+<span class="sd">  </span>
+<span class="sd">  Examples</span>
+<span class="sd">  --------</span>
+<span class="sd">  &gt;&gt;&gt; default_params = {&quot;date&quot;:[&#39;2021-01-01&#39;,&#39;2021-01-15&#39;],</span>
+<span class="sd">          &quot;time&quot;:[&quot;09:00&quot;,&quot;17:00&quot; ],</span>
+<span class="sd">          &quot;borough&quot;:[&quot;MANHATTAN&quot;],</span>
+<span class="sd">          &quot;injury&quot;:[0,10],</span>
+<span class="sd">          &quot;death&quot;:[0,0],</span>
+<span class="sd">          &quot;limit&quot;:10000}</span>
+<span class="sd">  &gt;&gt;&gt; df = get_crash_data(default_params)</span>
+
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">endpoint</span> <span class="o">=</span> <span class="s2">&quot;https://data.cityofnewyork.us/resource/h9gi-nx95.json?$where=&quot;</span>
+  <span class="n">filters</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="c1">#add crash_date_filter</span>
+  <span class="k">if</span> <span class="s2">&quot;date&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+    <span class="n">datefilter</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+  <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">])</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+    <span class="n">datefilter</span> <span class="o">=</span> <span class="s2">&quot;crash_date=&quot;</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span> <span class="o">+</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span>
+    <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datefilter</span><span class="p">)</span>
+  <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">])</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+    <span class="n">datefilter</span> <span class="o">=</span> <span class="s2">&quot;crash_date &quot;</span> <span class="o">+</span> <span class="s2">&quot;between &#39;&quot;</span> <span class="o">+</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;&#39; and &#39;&quot;</span> <span class="o">+</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span>
+    <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datefilter</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">return</span> <span class="s2">&quot;crash_date has to be list of either single date YYYY-MM-DD or [min date, max date]&quot;</span>
+
+  <span class="c1">#add crash_time filter</span>
+  <span class="k">if</span> <span class="s2">&quot;time&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+    <span class="n">timefilter</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+  <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">])</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+    <span class="n">timefilter</span> <span class="o">=</span> <span class="s2">&quot;crash_time=&quot;</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span> <span class="o">+</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span>
+    <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">timefilter</span><span class="p">)</span>
+  <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">])</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+    <span class="n">timefilter</span> <span class="o">=</span> <span class="s2">&quot;crash_time &quot;</span> <span class="o">+</span> <span class="s2">&quot;between &#39;&quot;</span> <span class="o">+</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;&#39; and &#39;&quot;</span> <span class="o">+</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span>
+    <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">timefilter</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">return</span> <span class="s2">&quot;crash_time has to be list of either single time HH:MM or [min time, max time]&quot;</span>
+
+  <span class="c1">#add zip_code filter</span>
+  <span class="k">if</span> <span class="s2">&quot;zip_code&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+    <span class="n">zipfilter</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+  <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;zip_code&quot;</span><span class="p">])</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+    <span class="n">zipfilter</span> <span class="o">=</span> <span class="s2">&quot;zip_cide=&quot;</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;zip_code&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span>
+    <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">zipfilter</span><span class="p">)</span>
+  <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;zip_code&quot;</span><span class="p">])</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+    <span class="n">zipfilter</span> <span class="o">=</span> <span class="s2">&quot;zip_code &quot;</span> <span class="o">+</span> <span class="s2">&quot;between &#39;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;zip_code&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;&#39; and &#39;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;zip_code&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span>
+    <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">zipfilter</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">return</span> <span class="s2">&quot;zip_code has to be list of either single zipcode (5 digits) or [min zipcode, max zipcode]&quot;</span>
+
+  <span class="c1">#add injury filter</span>
+  <span class="k">if</span> <span class="s2">&quot;injury&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+    <span class="n">injuryfilter</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+  <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;injury&quot;</span><span class="p">])</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+    <span class="n">injuryfilter</span> <span class="o">=</span> <span class="s2">&quot;number_of_persons_injured=&quot;</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;injury&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span>
+    <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">injuryfilter</span><span class="p">)</span>
+  <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;injury&quot;</span><span class="p">])</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+    <span class="n">injuryfilter</span> <span class="o">=</span> <span class="s2">&quot;number_of_persons_injured &quot;</span> <span class="o">+</span> <span class="s2">&quot;between &#39;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;injury&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;&#39; and &#39;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;injury&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span>
+    <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">injuryfilter</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">return</span> <span class="s2">&quot;injury has to be list of either single number or [min injuries, max injuries]&quot;</span>
+
+  <span class="c1">#add death filter</span>
+  <span class="k">if</span> <span class="s2">&quot;death&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+    <span class="n">deathfilter</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+  <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;death&quot;</span><span class="p">])</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+    <span class="n">deathfilter</span> <span class="o">=</span> <span class="s2">&quot;number_of_persons_killed=&quot;</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;death&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span>
+    <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">deathfilter</span><span class="p">)</span>
+  <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;death&quot;</span><span class="p">])</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+    <span class="n">deathfilter</span> <span class="o">=</span> <span class="s2">&quot;number_of_persons_killed &quot;</span> <span class="o">+</span> <span class="s2">&quot;between &#39;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;death&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;&#39; and &#39;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;death&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span>
+    <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">deathfilter</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">return</span> <span class="s2">&quot;injury has to be either single number or [min deaths, max deaths]&quot;</span>
+
+  <span class="c1">#add borough filter</span>
+  <span class="k">if</span> <span class="s2">&quot;borough&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+    <span class="n">boroughfilter</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">boroughfilter</span><span class="o">=</span><span class="s2">&quot;(&quot;</span>
+    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;borough&#39;</span><span class="p">])):</span>
+      <span class="k">if</span> <span class="n">b</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;borough&#39;</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">boroughfilter</span> <span class="o">=</span> <span class="n">boroughfilter</span> <span class="o">+</span> <span class="s2">&quot;borough=&#39;&quot;</span> <span class="o">+</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;borough&#39;</span><span class="p">][</span><span class="n">b</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;&#39;)&quot;</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="n">boroughfilter</span> <span class="o">=</span> <span class="n">boroughfilter</span> <span class="o">+</span> <span class="s2">&quot;borough=&#39;&quot;</span> <span class="o">+</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;borough&#39;</span><span class="p">][</span><span class="n">b</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;&#39; OR &quot;</span>
+    <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">boroughfilter</span><span class="p">)</span>
+
+  <span class="c1">#add limit</span>
+  <span class="k">if</span> <span class="s2">&quot;limit&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+    <span class="n">limit</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">limit</span><span class="o">=</span><span class="s2">&quot;&amp;$limit=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;limit&#39;</span><span class="p">])</span>
+
+
+  <span class="n">query</span> <span class="o">=</span> <span class="n">endpoint</span>
+  <span class="k">for</span> <span class="nb">filter</span> <span class="ow">in</span> <span class="n">filters</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">filter</span> <span class="o">==</span> <span class="n">filters</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+      <span class="n">query</span> <span class="o">=</span> <span class="n">query</span> <span class="o">+</span> <span class="nb">filter</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">query</span> <span class="o">=</span> <span class="n">query</span> <span class="o">+</span> <span class="s2">&quot; and &quot;</span> <span class="o">+</span> <span class="nb">filter</span>
+  <span class="n">query</span> <span class="o">=</span> <span class="n">query</span> <span class="o">+</span> <span class="n">limit</span>
+
+  <span class="n">r</span><span class="o">=</span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">df</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span></div>
+
+<div class="viewcode-block" id="geocode_missing_row"><a class="viewcode-back" href="../../autoapi/final_project_jc5492/final_project_jc5492/index.html#final_project_jc5492.final_project_jc5492.geocode_missing_row">[docs]</a><span class="k">def</span> <span class="nf">geocode_missing_row</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+  <span class="sd">&#39;&#39;&#39;Geocodes on/off/cross street names  and zip codes to return latitude and longitude</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  row: Row of a Dataframe</span>
+<span class="sd">    Contains columns for &quot;on_street_name&quot;, &quot;off_street_name&quot;, &quot;cross_street_name&quot; and &quot;zip_code&quot;</span>
+<span class="sd">  </span>
+<span class="sd">  Returns</span>
+<span class="sd">  --------</span>
+<span class="sd">  List</span>
+<span class="sd">    List of geocoded coordinates [lat,long]</span>
+<span class="sd">  </span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">notnull</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;cross_street_name&#39;</span><span class="p">]):</span>
+    <span class="k">if</span> <span class="n">geocoder</span><span class="o">.</span><span class="n">osm</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;cross_street_name&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;borough&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; New York &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;zip_code&#39;</span><span class="p">]))</span><span class="o">.</span><span class="n">latlng</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="k">return</span> <span class="n">geocoder</span><span class="o">.</span><span class="n">osm</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;cross_street_name&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;borough&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; New York &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;zip_code&#39;</span><span class="p">]))</span><span class="o">.</span><span class="n">latlng</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">return</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">]</span>
+  <span class="k">elif</span> <span class="n">geocoder</span><span class="o">.</span><span class="n">osm</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;on_street_name&#39;</span><span class="p">])</span><span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;off_street_name&#39;</span><span class="p">]))</span><span class="o">.</span><span class="n">latlng</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">geocoder</span><span class="o">.</span><span class="n">osm</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;on_street_name&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;off_street_name&#39;</span><span class="p">]))</span><span class="o">.</span><span class="n">latlng</span>
+  <span class="k">elif</span> <span class="n">geocoder</span><span class="o">.</span><span class="n">osm</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;off_street_name&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;on_street_name&#39;</span><span class="p">]))</span><span class="o">.</span><span class="n">latlng</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">geocoder</span><span class="o">.</span><span class="n">osm</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;off_street_name&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;on_street_name&#39;</span><span class="p">]))</span><span class="o">.</span><span class="n">latlng</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">]</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Jian Tong Chua.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

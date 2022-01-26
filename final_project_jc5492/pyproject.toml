@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "final_project_jc5492"
+version = "0.2.0"
+description = "MDS final project jc5492"
+authors = ["Jian Tong Chua"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Sphinx = "^4.2.0"
+pytest = "^6.2.5"
+pandas = "^1.3.5"
+requests = "^2.26.0"
+geocoder = "^1.38.1"
+
+[tool.poetry.dev-dependencies]
+myst-nb = "^0.13.1"
+sphinx-autoapi = "^1.8.4"
+sphinx-rtd-theme = "^1.0.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
