@@ -10,37 +10,37 @@ $ pip install final_project_jc5492
 
 ## Usage
 
-  Parameters
-  ----------
-  date : String
-    Either a single date in "YYYY-MM-DD" format, or a list of [min date, max date]
-  time : String
-    Either a single time in "HH:MM" format, or a list of [min time, max time]
-  zip_code : Integer
-    Either a single 5 digit zip code, or a list of [min zip code, max zip code]
-  borough : String
-    List of boroughs to be included i.e. ["MANHATTAN","QUEENS","BRONX"]
-  injury : Integer
-    Either a single integer or a list of [min injuries, max injuries]
-  death : Integer
-    Either a single integer or a list of [min deaths, max deaths]
-  limit : Integer 
-    Maximum number of rows to return from API
+Parameters
+----------
+date : String <br>
+  Either a single date in "YYYY-MM-DD" format, or a list of [min date, max date]<br>
+time : String<br>
+  Either a single time in "HH:MM" format, or a list of [min time, max time]<br>
+zip_code : Integer<br>
+  Either a single 5 digit zip code, or a list of [min zip code, max zip code]<br>
+borough : String<br>
+  List of boroughs to be included i.e. ["MANHATTAN","QUEENS","BRONX"]<br>
+injury : Integer<br>
+  Either a single integer or a list of [min injuries, max injuries]<br>
+death : Integer<br>
+  Either a single integer or a list of [min deaths, max deaths]<br>
+limit : Integer <br>
+  Maximum number of rows to return from API
   
-  Returns
-  --------
-  Pandas DataFrame
-    DataFrame of vehicle collisions returned from API
+Returns
+--------
+Pandas DataFrame<br>
+ DataFrame of vehicle collisions returned from API
   
   Examples
   --------
-  >>> default_params = {"date":['2021-01-01','2021-01-15'],
-          "time":["09:00","17:00" ],
-          "borough":["MANHATTAN"],
-          "injury":[0,10],
-          "death":[0,0],
-          "limit":10000}
-  >>> df = get_crash_data(default_params)
+ default_params = {"date":['2021-01-01','2021-01-15'],<br>
+                              "time":["09:00","17:00" ],<br>
+                              "borough":["MANHATTAN"],<br>
+                              "injury":[0,10],<br>
+                              "death":[0,0],<br>
+                              "limit":10000}<br>
+df = get_crash_data(default_params)
 
 
 ## Contributing
