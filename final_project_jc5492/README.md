@@ -10,7 +10,38 @@ $ pip install final_project_jc5492
 
 ## Usage
 
-- TODO
+  Parameters
+  ----------
+  date : String
+    Either a single date in "YYYY-MM-DD" format, or a list of [min date, max date]
+  time : String
+    Either a single time in "HH:MM" format, or a list of [min time, max time]
+  zip_code : Integer
+    Either a single 5 digit zip code, or a list of [min zip code, max zip code]
+  borough : String
+    List of boroughs to be included i.e. ["MANHATTAN","QUEENS","BRONX"]
+  injury : Integer
+    Either a single integer or a list of [min injuries, max injuries]
+  death : Integer
+    Either a single integer or a list of [min deaths, max deaths]
+  limit : Integer 
+    Maximum number of rows to return from API
+  
+  Returns
+  --------
+  Pandas DataFrame
+    DataFrame of vehicle collisions returned from API
+  
+  Examples
+  --------
+  >>> default_params = {"date":['2021-01-01','2021-01-15'],
+          "time":["09:00","17:00" ],
+          "borough":["MANHATTAN"],
+          "injury":[0,10],
+          "death":[0,0],
+          "limit":10000}
+  >>> df = get_crash_data(default_params)
+
 
 ## Contributing
 
